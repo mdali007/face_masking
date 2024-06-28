@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MD's creationz.</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .media-container {
+            max-width: 100%;
+            margin: 20px auto;
+            text-align: center;
+        }
+        img, video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+        .form-container button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+        .download-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .download-container a {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .download-container a:hover {
+            background-color: #218838;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-container button {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            .download-container a {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 24px;
+            }
+            .form-container button,
+            .download-container a {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Photo or Video</h1>
+    <div class="media-container">
+        {% if filename.endswith('.jpg') or filename.endswith('.jpeg') or filename.endswith('.png') %}
+        <img src="{{ url_for('uploaded_file', filename=filename) }}" alt="Original Image">
+        {% elif filename.endswith('.mp4') or filename.endswith('.avi') %}
+        <video controls>
+            <source src="{{ url_for('uploaded_file', filename=filename) }}" type="video/{{ filename.rsplit('.', 1)[1] }}">
+            Your browser does not support the video tag.
+        </video>
+        {% endif %}
+    </div>
+    <div class="form-container">
+        <form action="" method="post">
+            {% if filename.endswith('.jpg') or filename.endswith('.jpeg') or filename.endswith('.png') %}
+            <button type="submit" name="action" value="convert">Convert to Grayscale</button>
+            <button type="submit" name="action" value="blur_faces">Blur Faces</button>
+            {% elif filename.endswith('.mp4') or filename.endswith('.avi') %}
+            <button type="submit" name="action" value="convert">Convert to Grayscale</button>
+            <button type="submit" name="action" value="blur_faces">Blur Faces</button>
+            {% endif %}
+            <button type="submit" name="action" value="undo">Undo</button>
+            <button type="submit" name="action" value="exit">Exit</button>
+        </form>
+    </div>
+    {% if filename.startswith('edited_') or filename.startswith('blurred_') %}
+    <div class="download-container">
+        <h2>Download Edited File</h2>
+        <a href="{{ url_for('uploaded_file', filename=filename) }}" download>Download</a>
+    </div>
+    {% endif %}
+</body>
+</html>
